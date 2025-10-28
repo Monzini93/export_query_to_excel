@@ -16,7 +16,7 @@ OUTPUT_DIR = r"C:\Users\yurim\Desktop\relatorios"
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M")
+timestamp = datetime.now().strftime("%Y-%m-%d")
 CSV_FILEPATH = os.path.join(OUTPUT_DIR, f"Audible {timestamp}.csv")
 
 SQL_QUERY = """
@@ -76,7 +76,7 @@ try:
     for row in results:
         for key, value in row.items():
             if isinstance(value, datetime):
-                row[key] = value.strftime("%Y-%m-%d %H:%M:%S")
+                row[key] = value.strftime("%Y-%m-%d")
 
     with open(CSV_FILEPATH, "w", newline="", encoding="utf-8-sig") as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=headers, delimiter=";")
