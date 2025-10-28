@@ -66,10 +66,10 @@ try:
     results = cursor.fetchall()
 
     if not results:
-        print("⚠️ Nenhum resultado encontrado.")
+        print("Nenhum resultado encontrado.")
         sys.exit(0)
 
-    print(f"✅ Query executada: {len(results)} linhas retornadas.")
+    print(f"Query executada: {len(results)} linhas retornadas.")
 
     headers = list(results[0].keys())
 
@@ -86,9 +86,9 @@ try:
     print(f"🎉 Relatório salvo em:\n{CSV_FILEPATH}")
 
 except mysql.connector.Error as e:
-    print(f"❌ Erro MySQL: {e}")
+    print(f"Erro MySQL: {e}")
 except Exception as e:
-    print(f"❌ Erro inesperado: {e}")
+    print(f"Erro inesperado: {e}")
 finally:
     if 'cursor' in locals() and cursor:
         cursor.close()
