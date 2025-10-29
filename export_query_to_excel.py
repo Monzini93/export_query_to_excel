@@ -77,7 +77,7 @@ try:
         writer.writeheader()
         writer.writerows(results)
 
-    print(f"🎉 Relatório salvo em:\n{CSV_FILEPATH}")
+    print(f"Relatório salvo em:\n{CSV_FILEPATH}")
 
 except mysql.connector.Error as e:
     print(f"Erro MySQL: {e}")
