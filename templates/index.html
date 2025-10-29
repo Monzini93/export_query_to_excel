@@ -6,40 +6,97 @@
   <title>Exportar CSV por id_editora</title>
   <link rel="stylesheet" href="https://unpkg.com/mvp.css" />
   <style>
-    body { max-width: 900px; margin: 2rem auto; }
-    .muted { color:#666; font-size: .9rem; }
+    /* Estilos Gerais */
+    body { 
+      max-width: 900px; 
+      margin: 2rem auto; 
+      padding: 0 1rem; /* Adiciona preenchimento em telas pequenas */
+    }
+    .muted { 
+      color: #666; 
+      font-size: .9rem; 
+    }
+    code { 
+      font-size: 1.1em; /* Torna o <code> um pouco maior */
+    }
+
+    /* Mensagens Flash (Alerta) */
+    .flash {
+      padding: 1rem 1.5rem;
+      border-radius: 0.5rem;
+      border: 1px solid;
+      margin: 1.5rem 0;
+      font-weight: 500;
+    }
+    .flash.error { /* Categoria 'error' no Flask */
+      background: #ffecec;
+      border-color: #f5a9a9;
+      color: #a00;
+    }
+    .flash.success { /* Categoria 'success' no Flask */
+      background: #ecffec;
+      border-color: #a9f5a9;
+      color: #060;
+    }
+    .flash.info { /* Categoria 'info' no Flask */
+      background: #e6f7ff;
+      border-color: #b3e0ff;
+      color: #0056b3;
+    }
+
+    /* Ajustes no Formulário */
+    form > button { 
+      margin-top: 1rem; /* Espaço antes do botão */
+    }
+    details {
+        border: 1px solid #ddd;
+        border-radius: .5rem;
+        padding: .5rem 1rem .8rem;
+        margin-top: 1rem;
+    }
+    details[open] {
+        background: #fdfdfd;
+    }
+    details > summary {
+        cursor: pointer;
+        font-weight: 600;
+        padding: .2rem 0;
+    }
   </style>
 </head>
 <body>
   <header>
-    <h1>Exportar CSV por <code>p.id_editora</code></h1>
+    <h1>Gerar Relatório CSV Editoras.</h1>
     <p class="muted">Digite os IDs separados por vírgula. Ex.: <code>25,1582</code></p>
   </header>
 
-  {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-      <section>
-        {% for category, msg in messages %}
-          <p style="padding:.8rem;border-radius:.5rem;background:#ffecec;border:1px solid #f5a9a9;">
-            {{ msg }}
-          </p>
-        {% endfor %}
-      </section>
-    {% endif %}
-  {% endwith %}
+  <main>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <section>
+          {% for category, msg in messages %}
+            <p class="flash {{ category }}">{{ msg }}</p>
+          {% endfor %}
+        </section>
+      {% endif %}
+    {% endwith %}
 
-  <form method="post" action="/export">
-    <label for="ids">IDs de editora (separados por vírgula)</label>
-    <input id="ids" name="ids" type="text" placeholder="25,1582,7" required />
+    <form method="post" action="/export">
+      <label for="ids">IDs de editora (separados por vírgula)</label>
+      <input id="ids" name="ids" type="text" placeholder="25,1582,7" required />
 
-    <label for="limit_rows">Limite de linhas (proteção)</label>
-    <input id="limit_rows" name="limit_rows" type="number" value="20000" min="1" max="1000000" />
+      <details>
+        <summary>Opções avançadas</summary>
+        <label for="limit_rows">Limite de linhas (proteção)</label>
+        <input id="limit_rows" name="limit_rows" type="number" value="20000" min="1" max="1000000" />
+      </details>
 
-    <button type="submit">Gerar CSV</button>
-  </form>
+      <button type="submit">Gerar CSV</button>
+    </form>
+  </main>
 
   <footer>
-    <p class="muted">Os dados são filtrados com <code>WHERE p.id_editora IN (:ids)</code> usando parâmetros seguros.</p>
+    <p class="muted">Qualquer duvida chama o Yuri Monzini</p>
   </footer>
 </body>
 </html>
