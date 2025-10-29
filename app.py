@@ -6,22 +6,33 @@ from io import StringIO
 import pandas as pd
 from flask import Flask, render_template, request, Response, flash, redirect, url_for
 from sqlalchemy import create_engine, text, bindparam
+from sqlalchemy.engine import URL  # <<<<<< ADICIONEI
 from dotenv import load_dotenv
 
 load_dotenv()
 
 # ===== CONFIG BANCO =====
 DB_HOST = os.getenv("DB_HOST", "localhost")
-DB_PORT = os.getenv("DB_PORT", "3306")
+DB_PORT = int(os.getenv("DB_PORT", "3306"))         # <<<<<< porta como int
 DB_USER = os.getenv("DB_USER", "usuario")
 DB_PASS = os.getenv("DB_PASS", "senha")
 DB_NAME = os.getenv("DB_NAME", "seu_banco")
-DB_CHARSET = os.getenv("DB_CHARSET", "utf8mb3")  # use utf8mb4 se seu RDS suportar
+DB_CHARSET = os.getenv("DB_CHARSET", "utf8mb3")     # use utf8mb4 se seu RDS suportar
 
-ENGINE = create_engine(
-    f"mysql+pymysql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}?charset={DB_CHARSET}",
-    pool_pre_ping=True,
+# --- URL segura (suporta senha com @ % : ! etc.) ---
+db_url = URL.create(
+    drivername="mysql+pymysql",
+    username=DB_USER,
+    password=DB_PASS,          # não precisa escapar manualmente
+    host=DB_HOST,
+    port=DB_PORT,
+    database=DB_NAME,
+    query={"charset": DB_CHARSET},   # vira ?charset=...
+    # se precisar SSL no RDS:
+    # query={"charset": DB_CHARSET, "ssl_ca": "rds-combined-ca-bundle.pem"}
 )
+
+ENGINE = create_engine(db_url, pool_pre_ping=True)
 
 # ===== APP =====
 app = Flask(__name__)
@@ -58,7 +69,6 @@ LEFT JOIN produto_editora pe
     ON pe.id_editora = p.id_editora
 LEFT JOIN parceiros par 
     ON par.id_parceiros = pe.id_parceiros
--- WHERE DINÂMICO ENTRA AQUI
 /**WHERE_CLAUSE**/
 ORDER BY 
     par.nome_fantasia ASC,
@@ -69,10 +79,6 @@ LIMIT :limit_rows
 ID_PATTERN = re.compile(r"^\s*\d+\s*(,\s*\d+\s*)*$")  # só dígitos e vírgulas
 
 def parse_ids(raw: str) -> list[int]:
-    """
-    Recebe uma string como '25, 1582, 7' e devolve [25, 1582, 7].
-    Lança ValueError se tiver caracteres inválidos.
-    """
     raw = (raw or "").strip()
     if not raw:
         return []
@@ -120,11 +126,8 @@ def export():
         flash(str(ve), "danger")
         return redirect(url_for("index"))
     except Exception as e:
-        # Em produção, logue o erro (Sentry/CloudWatch). Aqui mostramos feedback simples.
         flash(f"Erro ao gerar relatório: {e}", "danger")
         return redirect(url_for("index"))
 
 if __name__ == "__main__":
-    # flask run também funciona. Aqui permite rodar com: python app.py
     app.run(host="0.0.0.0", port=8000, debug=True)
-    print(f"Erro ao gerar relatório: {e}")

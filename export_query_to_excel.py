@@ -2,7 +2,7 @@ import csv
 import sys
 from datetime import datetime
 import os
-import mysql.connector
+import mysql.connector # pyright: ignore[reportMissingImports]
 
 DB_HOST = "tocalivrosdb.c3uprzzalu4x.us-east-1.rds.amazonaws.com"
 DB_USER = "yuri"

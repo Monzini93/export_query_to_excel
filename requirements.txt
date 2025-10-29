@@ -1,5 +1,17 @@
-Flask>=3.0
-SQLAlchemy>=2.0
-PyMySQL>=1.1
-pandas>=2.1
-python-dotenv>=1.0
+# --- Web Framework ---
+Flask==3.0.3
+
+# --- Banco de Dados e ORM ---
+SQLAlchemy==2.0.32
+PyMySQL==1.1.1
+
+# --- Manipulação de Dados ---
+pandas==2.2.3
+
+# --- Leitura de Variáveis de Ambiente ---
+python-dotenv==1.0.1
+
+# --- (Opcional) Segurança e compatibilidade ---
+itsdangerous==2.2.0
+Jinja2==3.1.4
+Werkzeug==3.0.4
