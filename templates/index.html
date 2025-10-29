@@ -4,99 +4,248 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Exportar CSV por id_editora</title>
-  <link rel="stylesheet" href="https://unpkg.com/mvp.css" />
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
   <style>
-    /* Estilos Gerais */
-    body { 
-      max-width: 900px; 
-      margin: 2rem auto; 
-      padding: 0 1rem; /* Adiciona preenchimento em telas pequenas */
-    }
-    .muted { 
-      color: #666; 
-      font-size: .9rem; 
-    }
-    code { 
-      font-size: 1.1em; /* Torna o <code> um pouco maior */
+    /* Variáveis de Cor (fácil de customizar) */
+    :root {
+      --primary-color: #007bff;
+      --primary-hover: #0056b3;
+      --danger-bg: #f8d7da;
+      --danger-border: #f5c6cb;
+      --danger-text: #721c24;
+      --success-bg: #d4edda;
+      --success-border: #c3e6cb;
+      --success-text: #155724;
+      --info-bg: #d1ecf1;
+      --info-border: #bee5eb;
+      --info-text: #0c5460;
+      --light-gray-bg: #f4f7f6;
+      --dark-text: #333;
+      --muted-text: #6c757d;
     }
 
-    /* Mensagens Flash (Alerta) */
+    /* Reset básico e Estilo do Body */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html { font-size: 16px; }
+
+    body {
+      font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--light-gray-bg);
+      color: var(--dark-text);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    /* O "Card" principal */
+    .container {
+      width: 100%;
+      max-width: 650px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+      overflow: hidden; /* Para manter o border-radius */
+    }
+
+    /* Cabeçalho do Card */
+    header {
+      padding: 2rem 2.5rem;
+      border-bottom: 1px solid #eee;
+      background: #fafafa;
+    }
+    header h1 {
+      font-size: 1.75rem;
+      font-weight: 600;
+      color: var(--dark-text);
+    }
+    header p {
+      font-size: 0.95rem;
+      color: var(--muted-text);
+      margin-top: 0.25rem;
+    }
+    header code, footer code {
+      font-family: Consolas, 'Courier New', monospace;
+      background: #e9ecef;
+      padding: 0.2em 0.4em;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+
+    /* Conteúdo Principal (Formulário e Alertas) */
+    main {
+      padding: 2.5rem;
+    }
+
+    /* Mensagens Flash (Alertas) */
     .flash {
-      padding: 1rem 1.5rem;
-      border-radius: 0.5rem;
-      border: 1px solid;
-      margin: 1.5rem 0;
+      padding: 1rem 1.25rem;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      margin-bottom: 1.5rem;
       font-weight: 500;
+      font-size: 0.95rem;
     }
-    .flash.error { /* Categoria 'error' no Flask */
-      background: #ffecec;
-      border-color: #f5a9a9;
-      color: #a00;
+    .flash.error {
+      background-color: var(--danger-bg);
+      border-color: var(--danger-border);
+      color: var(--danger-text);
     }
-    .flash.success { /* Categoria 'success' no Flask */
-      background: #ecffec;
-      border-color: #a9f5a9;
-      color: #060;
+    .flash.success {
+      background-color: var(--success-bg);
+      border-color: var(--success-border);
+      color: var(--success-text);
     }
-    .flash.info { /* Categoria 'info' no Flask */
-      background: #e6f7ff;
-      border-color: #b3e0ff;
-      color: #0056b3;
+    .flash.info {
+      background-color: var(--info-bg);
+      border-color: var(--info-border);
+      color: var(--info-text);
     }
 
-    /* Ajustes no Formulário */
-    form > button { 
-      margin-top: 1rem; /* Espaço antes do botão */
+    /* Estilos do Formulário */
+    .form-group {
+      margin-bottom: 1.25rem;
     }
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    input[type="text"],
+    input[type="number"] {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      font-family: 'Poppins', sans-serif;
+      border: 1px solid #ced4da;
+      border-radius: 8px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(0,123,255, 0.2);
+    }
+
+    /* Botão de Ação (CTA) */
+    button[type="submit"] {
+      width: 100%;
+      padding: 0.85rem 1rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      font-family: 'Poppins', sans-serif;
+      color: #fff;
+      background-color: var(--primary-color);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: .5rem;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+    button[type="submit"]:hover {
+      background-color: var(--primary-hover);
+    }
+    button[type="submit"]:active {
+      transform: scale(0.99);
+    }
+
+    /* Opções Avançadas (Details) */
     details {
-        border: 1px solid #ddd;
-        border-radius: .5rem;
-        padding: .5rem 1rem .8rem;
-        margin-top: 1rem;
+      border: 1px solid #eee;
+      border-radius: 8px;
+      margin-top: 1.5rem;
+      background: #fdfdfd;
+    }
+    details summary {
+      padding: 0.75rem 1.25rem;
+      font-weight: 500;
+      color: var(--dark-text);
+      cursor: pointer;
+      outline: none;
+      transition: background-color 0.1s;
     }
     details[open] {
-        background: #fdfdfd;
+      background: #fff;
     }
-    details > summary {
-        cursor: pointer;
-        font-weight: 600;
-        padding: .2rem 0;
+    details[open] summary {
+      border-bottom: 1px solid #eee;
     }
+    details > div { /* Wrapper para o conteúdo */
+      padding: 1.25rem;
+    }
+
+    /* Rodapé do Card */
+    footer {
+      padding: 1.5rem 2.5rem;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--muted-text);
+      border-top: 1px solid #eee;
+    }
+    
+    /* Responsividade */
+    @media (max-width: 768px) {
+        body { padding: 1rem; }
+        header, main { padding: 1.5rem; }
+        footer { padding: 1.5rem; }
+        header h1 { font-size: 1.5rem; }
+    }
+
   </style>
 </head>
 <body>
-  <header>
-    <h1>Gerar Relatório CSV Editoras.</h1>
-    <p class="muted">Digite os IDs separados por vírgula. Ex.: <code>25,1582</code></p>
-  </header>
 
-  <main>
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        <section>
-          {% for category, msg in messages %}
-            <p class="flash {{ category }}">{{ msg }}</p>
-          {% endfor %}
-        </section>
-      {% endif %}
-    {% endwith %}
+  <div class="container">
+    <header>
+      <h1>Exportar relatorio em para CSV</h1>
+    </header>
 
-    <form method="post" action="/export">
-      <label for="ids">IDs de editora (separados por vírgula)</label>
-      <input id="ids" name="ids" type="text" placeholder="25,1582,7" required />
+    <main>
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <section>
+            {% for category, msg in messages %}
+              <p class="flash {{ category }}">{{ msg }}</p>
+            {% endfor %}
+          </section>
+        {% endif %}
+      {% endwith %}
 
-      <details>
-        <summary>Opções avançadas</summary>
-        <label for="limit_rows">Limite de linhas (proteção)</label>
-        <input id="limit_rows" name="limit_rows" type="number" value="20000" min="1" max="1000000" />
-      </details>
+      <form method="post" action="/export">
+        
+        <div class="form-group">
+          <label for="ids">IDs de editora (separados por vírgula)</label>
+          <input id="ids" name="ids" type="text" placeholder="25,1582,7" required />
+        </div>
 
-      <button type="submit">Gerar CSV</button>
-    </form>
-  </main>
+        <details>
+          <summary>Opções avançadas</summary>
+          <div>
+            <div class="form-group">
+              <label for="limit_rows">Limite de linhas (proteção)</label>
+              <input id="limit_rows" name="limit_rows" type="number" value="20000" min="1" max="1000000" />
+            </div>
+          </div>
+        </details>
 
-  <footer>
-    <p class="muted">Qualquer duvida chama o Yuri Monzini</p>
-  </footer>
+        <button type="submit">Gerar e Baixar CSV</button>
+      </form>
+    </main>
+
+    <footer>
+      <p>Desenvolvido por Yuri Monzini.</p>
+    </footer>
+  </div>
+
 </body>
 </html>
