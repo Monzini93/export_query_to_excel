@@ -17,30 +17,24 @@ OUTPUT_DIR = r"C:\Users\yurim\Desktop\relatorios"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 timestamp = datetime.now().strftime("%Y-%m-%d")
-CSV_FILEPATH = os.path.join(OUTPUT_DIR, f"Audible {timestamp}.csv")
+CSV_FILEPATH = os.path.join(OUTPUT_DIR, f"Livros Digitaliza {timestamp}.csv")
 
 SQL_QUERY = """
-SELECT 
-    par.nome_fantasia AS "Distribuidora",
-    p.sku,
-    p.nome,
-    pe.editora_nome,
-    pd.formato,
-    pd.status,
-    pd.distribuicao_enviado_status,
-    pd.distriubicao_enviado_data
-FROM 
-	produto_distribuicao pd
-LEFT JOIN 
-	produto p ON p.sku = pd.sku
-LEFT JOIN 
-	produto_editora pe ON pe.id_editora = p.id_editora
-LEFT JOIN 
-	parceiros par ON par.id_parceiros = pd.id_parceiros
-WHERE 
-    pd.status = 'ativo'
-    AND pd.formato = 'A'
-    AND pd.id_parceiros = 1196
+SELECT
+	p.isbn,
+	p.nome,
+	p.id_editora,
+	pe.editora_nome,
+	p.preco,
+	p.obs
+FROM
+	produto p
+LEFT JOIN produto_editora pe 
+    ON pe.id_editora = p.id_editora
+LEFT JOIN parceiros par 
+    ON par.id_parceiros = pe.id_parceiros
+WHERE
+	p.obs = 'Digitaliza'
 """
 
 try:
