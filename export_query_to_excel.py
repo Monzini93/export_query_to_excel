@@ -24,7 +24,7 @@ SELECT
     p.nome,
     p.autor,
     p.`status`,
-    par.nome_fantasia AS editora,
+    pes.editora_selo AS editora,
     p.faixa_etaria,
     cate.categoria_nome AS genero,
     p.preco,
@@ -34,8 +34,7 @@ SELECT
 FROM produto p
 LEFT JOIN produto_editora pe
   ON pe.id_editora = p.id_editora
-LEFT JOIN parceiros par
-  ON par.id_parceiros = pe.id_parceiros
+LEFT JOIN produto_editora_selo pes ON pes.id_editora_selo = p.id_editora_selo
 LEFT JOIN 
 	assinatura_tipo_produto atp ON atp.sku = p.sku
 LEFT JOIN (
@@ -55,7 +54,6 @@ LEFT JOIN (
   ON cate.sku = p.sku
 WHERE
    p.faixa_etaria <= 14
-	AND par.id_parceiros != 719
 	AND atp.id_assinatura_tipo = 3
 	AND p.`status` = 'ativo'
 """
