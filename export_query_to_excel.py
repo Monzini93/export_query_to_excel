@@ -23,6 +23,7 @@ SELECT
     p.sku,
     p.nome,
     p.autor,
+    p.`status`,
     par.nome_fantasia AS editora,
     p.faixa_etaria,
     cate.categoria_nome AS genero,
@@ -35,16 +36,16 @@ LEFT JOIN produto_editora pe
   ON pe.id_editora = p.id_editora
 LEFT JOIN parceiros par
   ON par.id_parceiros = pe.id_parceiros
-  LEFT JOIN 
+LEFT JOIN 
 	assinatura_tipo_produto atp ON atp.sku = p.sku
 LEFT JOIN (
     SELECT
         cp.sku,
         GROUP_CONCAT(c.categoria_nome ORDER BY c.categoria_nome SEPARATOR ', ') AS categoria_nome
     FROM 
-        categoria_produto cp
+	 	categoria_produto cp
     INNER JOIN 
-        categoria c ON c.id_categoria = cp.id_categoria
+	 	categoria c ON c.id_categoria = cp.id_categoria
     WHERE
         c.ativo = '1'
         AND (c.path LIKE '7%' OR c.path LIKE '1%')
@@ -53,9 +54,10 @@ LEFT JOIN (
 ) AS cate
   ON cate.sku = p.sku
 WHERE
-    p.faixa_etaria <= 14
-    AND par.id_parceiros != 719
-    AND atp.id_assinatura_tipo = 3
+   p.faixa_etaria <= 14
+	AND par.id_parceiros != 719
+	AND atp.id_assinatura_tipo = 3
+	AND p.`status` = 'ativo'
 """
 
 try:
